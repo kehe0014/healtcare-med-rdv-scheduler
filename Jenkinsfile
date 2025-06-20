@@ -1,5 +1,8 @@
 pipeline {
-    agent any
+    docker {
+        image 'maven:3.8.6-jdk-11'
+        args '-v $HOME/.m2:/root/.m2'
+    }
     
     parameters {
         choice(
@@ -20,7 +23,6 @@ pipeline {
     }
 
     environment {
-        MAVEN_HOME = tool 'maven-3.8.6'
         JAVA_HOME = tool 'jdk-11'
         // Automatically set environment based on branch
         AUTO_ENV = determineEnvironment()
@@ -47,7 +49,7 @@ pipeline {
         stage('Check Prerequisites') {
             steps {
                 script {
-                    sh 'docker --version'
+                    sh 'docker --version || ./mvnw -version'
                     sh 'mvn --version'
                     sh 'java -version'
                 }
@@ -57,7 +59,7 @@ pipeline {
         stage('Build with Maven') {
             steps {
                 script {
-                    sh "mvn clean package -Dspring.profiles.active=${env.ENVIRONMENT}"
+                    sh "./mvnw clean package -Dspring.profiles.active=${env.ENVIRONMENT}"
                 }
             }
         }
