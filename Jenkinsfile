@@ -25,6 +25,16 @@ pipeline {
     }
 
     stages {
+        
+      stage('Check JAVA_HOME') {
+            steps {
+                script {
+                    echo "JAVA_HOME from agent: ${env.JAVA_HOME}"
+                    sh "${env.JAVA_HOME}/bin/java -version"
+                }
+            }
+        }
+        
         stage('Initialize') {
             steps {
                 script {
@@ -46,7 +56,7 @@ pipeline {
         stage('Check Prerequisites') {
             steps {
                 script {
-                    sh 'docker --version || true' // Added '|| true' to prevent failure if docker isn't found
+                    sh 'docker --version || true' 
                     sh 'mvn --version'
                     sh 'java -version'
                 }
