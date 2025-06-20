@@ -128,17 +128,21 @@ pipeline {
                 }
             }
         }
-    }
-
-    post {
-        always {
-            cleanWs()
+        stage('Cleanup') {
+            steps {
+                script {
+                    // Clean up Docker images to save space
+                    sh "docker rmi ${env.DOCKER_IMAGE_NAME} || true"
+                }
+            }
         }
-        success {
-            echo "Build succeeded! Docker image: ${env.DOCKER_IMAGE_NAME}"
-        }
-        failure {
-            echo "Build failed for environment: ${env.ENVIRONMENT}"
+        stage('Notify') {
+            steps {
+                script {
+                    // Notify about the successful build and push
+                    echo "Build and push completed successfully for ${env.ENVIRONMENT} environment on branch ${env.BRANCH_NAME}."
+                }
+            }
         }
     }
 }
