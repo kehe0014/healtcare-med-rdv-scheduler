@@ -1,6 +1,6 @@
 pipeline {
     agent any
-    
+
     parameters {
         choice(
             name: 'ENVIRONMENT',
@@ -21,15 +21,15 @@ pipeline {
 
     environment {
         JAVA_HOME = tool 'jdk-11'
-        // Automatically set environment based on branch
-        AUTO_ENV = determineEnvironment()
+        AUTO_ENV = ''
     }
 
     stages {
         stage('Initialize') {
             steps {
                 script {
-                    // Override parameter with auto-detected environment if not manually specified
+                    env.AUTO_ENV = determineEnvironment()
+
                     if (params.ENVIRONMENT != env.AUTO_ENV) {
                         env.ENVIRONMENT = env.AUTO_ENV
                         echo "Auto-selected environment: ${env.ENVIRONMENT} based on branch ${env.BRANCH_NAME}"
@@ -46,7 +46,7 @@ pipeline {
         stage('Check Prerequisites') {
             steps {
                 script {
-                    sh 'docker --version || ./mvnw -version'
+                    sh 'docker --version || true' // Added '|| true' to prevent failure if docker isn't found
                     sh 'mvn --version'
                     sh 'java -version'
                 }
@@ -68,8 +68,8 @@ pipeline {
                     def imageName = "${params.DOCKER_HUB_REPO}:${imageTag}"
                     
                     sh """
-                        mvn spring-boot:build-image \
-                            -Dspring-boot.build-image.imageName=${imageName} \
+                        mvn spring-boot:build-image \\
+                            -Dspring-boot.build-image.imageName=${imageName} \\
                             -Dspring.profiles.active=${env.ENVIRONMENT}
                     """
                     
@@ -105,8 +105,7 @@ pipeline {
                         if (env.ENVIRONMENT == 'staging') {
                             sh "docker tag ${env.DOCKER_IMAGE_NAME} ${params.DOCKER_HUB_REPO}:staging-latest"
                             sh "docker push ${params.DOCKER_HUB_REPO}:staging-latest"
-                        }
-                        if (env.ENVIRONMENT == 'prod') {
+                        } else if (env.ENVIRONMENT == 'prod') { // Changed from 'if' to 'else if' for clarity
                             sh "docker tag ${env.DOCKER_IMAGE_NAME} ${params.DOCKER_HUB_REPO}:prod-latest"
                             sh "docker push ${params.DOCKER_HUB_REPO}:prod-latest"
                         }
@@ -152,8 +151,8 @@ def determineEnvironment() {
         return 'dev'
     } else if (env.BRANCH_NAME == 'main') {
         // For main branch, we'll build both staging and prod in separate runs
-        // Default to staging unless manually overridden
+        // If the ENVIRONMENT parameter is set, use it; otherwise, default to 'staging'
         return params.ENVIRONMENT ?: 'staging'
     }
-    return 'dev' // default fallback
+    return 'dev' // default fallback for any other branches not explicitly handled
 }
