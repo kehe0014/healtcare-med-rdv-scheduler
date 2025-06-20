@@ -1,4 +1,4 @@
-package com.externship.appointment.Person_storage;
+package com.tdksoft.appointment.Person_storage;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;

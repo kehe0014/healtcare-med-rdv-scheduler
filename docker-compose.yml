@@ -1,0 +1,35 @@
+services:
+  appointment-app:
+    image: appointment-app
+    build:
+      context: ./docker
+      dockerfile: Dockerfile
+    ports:
+      - "9090:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - mysql-db
+    networks:
+      - appointment-network
+
+  mysql-db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: appointment_db
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: apppassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - appointment-network
+
+volumes:
+  mysql-data:
+
+networks:
+  appointment-network:
+    driver: bridge

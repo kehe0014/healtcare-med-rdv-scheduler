@@ -1,4 +1,4 @@
-package com.externship.appointment;
+package com.tdksoft.appointment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,13 +13,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.externship.appointment.Appointment_storage.AppointmentDelete;
-import com.externship.appointment.Appointment_storage.Appointment;
-import com.externship.appointment.Appointment_storage.AppointmentRepository;
-import com.externship.appointment.Doctor_storage.Doctor;
-import com.externship.appointment.Doctor_storage.DoctorRepository;
-import com.externship.appointment.Person_storage.Person;
-import com.externship.appointment.Person_storage.PersonRepository;
+import com.tdksoft.appointment.Appointment_storage.Appointment;
+import com.tdksoft.appointment.Doctor_storage.Doctor;
+import com.tdksoft.appointment.Person_storage.Person;
+import com.tdksoft.appointment.Appointment_storage.AppointmentDelete;
+import com.tdksoft.appointment.Appointment_storage.AppointmentRepository;
+import com.tdksoft.appointment.Doctor_storage.DoctorRepository;
+import com.tdksoft.appointment.Person_storage.PersonRepository;
 
 @Controller
 public class ControllerClass {
