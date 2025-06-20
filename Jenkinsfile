@@ -20,7 +20,7 @@ pipeline {
     }
 
     environment {
-        JAVA_HOME = tool 'jdk-11'
+       // JAVA_HOME = tool 'jdk-11'
         AUTO_ENV = ''
     }
 
