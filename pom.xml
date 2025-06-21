@@ -58,61 +58,24 @@
         <plugin>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-maven-plugin</artifactId>
-            <executions>
-				<execution>
-					<id>docker</id>
-					<goals>
-						<goal>build-image</goal>
-					</goals>
-					<configuration>
-						<image>
-							<name>appointment-app</name>
-						</image>
-						<!--<env>
-							<SPRING_PROFILES_ACTIVE>docker</SPRING_PROFILES_ACTIVE>
-						</env> -->
-						<activation>
-						<activeByDefault>true</activeByDefault>
-					</activation>
-					</configuration>
-				</execution>
-                <execution>
-                    <id>mysql</id>
-                    <goals>
-                        <goal>build-image</goal>
-                    </goals>
-                    <configuration>
-                        <image>
-                            <name>appointment-app-mysql</name>
-                        </image>
-                        <env>
-                            <SPRING_PROFILES_ACTIVE>mysql</SPRING_PROFILES_ACTIVE>
-                        </env>
-                    </configuration>
-                </execution>
-                <execution>
-                    <id>postgres</id>
-                    <goals>
-                        <goal>build-image</goal>
-                    </goals>
-                    <configuration>
-                        <image>
-                            <name>appointment-app-postgres</name>
-                        </image>
-                        <env>
-                            <SPRING_PROFILES_ACTIVE>dev-postgres</SPRING_PROFILES_ACTIVE>
-                        </env>
-                    </configuration>
-                </execution>
-            </executions>
         </plugin>
     </plugins>
 </build>
 <distributionManagement>
-    <snapshotRepository>
-        <id>snapshots</id>
-        <name>a0lx5bxl8cb2t-artifactory-primary-0-snapshots</name>
+    
+	<!-- Dépôt pour les SNAPSHOTS (versions de développement) -->
+	<snapshotRepository>
+        <id>tdk-libs-snapshot</id>
+        <name>tdksoft-snapshot-repository</name>
         <url>https://tdksoft.jfrog.io/artifactory/tdk-libs-snapshot</url>
     </snapshotRepository>
+	
+	
+	<!-- Dépôt pour les RELEASES (versions de production) -->
+    <repository>
+        <id>tdk-libs-release</id>
+        <name>tdksoft-release-repository</name>
+        <url>https://tdksoft.jfrog.io/artifactory/tdk-libs-release</url>
+    </repository>
 </distributionManagement>
 </project>
