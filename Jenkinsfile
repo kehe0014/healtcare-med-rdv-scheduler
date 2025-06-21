@@ -19,28 +19,28 @@ pipeline {
             }
         }
         
-        stage('Deploy') {
-                    steps {
-                        script {
-                            // Configure Maven settings with Artifactory credentials
-                            sh """
-                            cat > settings.xml << 'EOF'
-                            <settings>
-                                <servers>
-                                    <server>
-                                        <id>${REPO_ID}</id>
-                                        <username>admin</username>
-                                        <password>${ARTIFACTORY_CREDS}</password>
-                                    </server>
-                                </servers>
-                            </settings>
-                            EOF
-                            """
-                            
-                            // Deploy using Maven with custom settings
-                            sh 'mvn -s settings.xml clean deploy'
-                        }
+stage('Deploy') {
+            steps {
+                withCredentials([string(credentialsId: 'jfrog-access-token', variable: 'ARTIFACTORY_TOKEN')]) {
+                    script {
+                        // Securely create settings.xml
+                        writeFile file: 'settings.xml', text: """\
+                        <settings>
+                          <servers>
+                            <server>
+                              <id>${REPO_ID}</id>
+                              <username>admin</username>
+                              <password>${ARTIFACTORY_TOKEN}</password>
+                            </server>
+                          </servers>
+                        </settings>
+                        """.stripIndent()
+                        
+                        // Run Maven deploy
+                        sh 'mvn -B -s settings.xml clean deploy'
                     }
                 }
+            }
+        }
     }
 }
