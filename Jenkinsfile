@@ -4,7 +4,7 @@ pipeline {
         ARTIFACTORY_URL = 'https://tdksoft.jfrog.io/artifactory'
         REPO_ID = 'tdk-libs-snapshot'
         REPO_PATH = 'com/tdksoft/appointment'
-        ARTIFACTORY_CREDS = credentials('jfrog-access-token')
+        ARTIFACTORY_CREDS = credentials('ARTIFACTORY_TOKEN')
     }
     stages {
         stage('Build') {
