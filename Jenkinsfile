@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        NEXUS_TOKEN = credentials('nexus-access-token')
+        NEXUS_TOKEN = credentials('jfrog-access-token')
     }
     stages {
         stage('Build') {
