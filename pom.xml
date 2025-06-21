@@ -108,5 +108,11 @@
         </plugin>
     </plugins>
 </build>
-
+<distributionManagement>
+    <snapshotRepository>
+        <id>snapshots</id>
+        <name>a0lx5bxl8cb2t-artifactory-primary-0-snapshots</name>
+        <url>https://tdksoft.jfrog.io/artifactory/tdk-libs-snapshot</url>
+    </snapshotRepository>
+</distributionManagement>
 </project>
