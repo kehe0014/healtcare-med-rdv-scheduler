@@ -1,4 +1,4 @@
-package com.externship.appointment.Appointment_storage;
+package com.tdksoft.appointment.Appointment_storage;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;

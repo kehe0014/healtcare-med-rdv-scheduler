@@ -1,11 +1,8 @@
-package com.externship.appointment.Doctor_storage;
+package com.tdksoft.appointment.Doctor_storage;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-
 import org.springframework.stereotype.Component;
 
 @Component

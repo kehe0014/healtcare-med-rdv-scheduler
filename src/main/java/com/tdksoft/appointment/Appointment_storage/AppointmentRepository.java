@@ -1,4 +1,4 @@
-package com.externship.appointment.Appointment_storage;
+package com.tdksoft.appointment.Appointment_storage;
 
 import org.springframework.data.repository.CrudRepository;
 
