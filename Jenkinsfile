@@ -1,7 +1,6 @@
 pipeline {
     agent any
     environment {
-        NEXUS_URL = 'https://your-nexus-server/repository/your-repo/'
         NEXUS_TOKEN = credentials('nexus-access-token')
     }
     stages {
@@ -19,7 +18,7 @@ pipeline {
         
         stage('Deploy') {
             steps {
-                sh 'mvn -B clean deploy --settings settings.xml'
+                sh 'mvn  clean deploy'
             }
         }
     }
