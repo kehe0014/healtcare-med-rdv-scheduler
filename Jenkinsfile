@@ -1,39 +1,45 @@
 pipeline {
-    agent any
+    agent { label 'tdk-desk-agent-01' }
+
     environment {
-        ARTIFACTORY_URL = 'https://tdksoft.jfrog.io/artifactory'
-        REPO_ID = 'tdk-libs-snapshot'
-        REPO_PATH = 'com/tdksoft/appointment'
+        GITHUB_USER = 'kehe0014'
+        GITHUB_REPO = 'healtcare-med-rdv-scheduler'
+        GITHUB_TOKEN = credentials('github_token') // Jenkins Credentials ID
     }
+
     stages {
-        stage('Deploy') {
+        stage('Checkout') {
             steps {
-                withCredentials([string(credentialsId: 'jfrog-access-token', variable: 'ARTIFACTORY_TOKEN')]) {
-                    script {
-                        // Securely create settings.xml
-                        writeFile file: 'settings.xml', text: """<settings>
-                          <servers>
-                            <server>
-                              <id>${REPO_ID}</id>
-                              <username>admin</username>
-                              <password>${ARTIFACTORY_TOKEN}</password>
-                            </server>
-                          </servers>
-                        </settings>"""
-                        
-                        // Run Maven deploy
-                        sh 'mvn -B -s settings.xml clean deploy'
-                        
-                        // Fallback direct upload
-                        sh '''
-                        ARTIFACT_PATH=$(find target -name "*.jar" -not -name "*-sources.jar" -not -name "*-javadoc.jar" | head -n 1)
-                        curl -H "Authorization: Bearer $ARTIFACTORY_TOKEN" \
-                             -X PUT "${ARTIFACTORY_URL}/${REPO_PATH}/$(basename $ARTIFACT_PATH)" \
-                             -T "$ARTIFACT_PATH"
-                        '''
-                    }
+                git url: "https://github.com/${env.GITHUB_USER}/${env.GITHUB_REPO}.git", branch: 'main'
+            }
+        }
+
+        stage('Build with Maven') {
+            steps {
+                sh 'mvn clean package -DskipTests'
+            }
+        }
+
+        stage('Publish to GitHub Packages') {
+            steps {
+                withEnv(["MAVEN_OPTS=-Xmx1024m"]) {
+                    sh """
+                    mvn deploy \
+                        -DaltDeploymentRepository=github::default::https://maven.pkg.github.com/${GITHUB_USER}/${GITHUB_REPO} \
+                        -Dusername=${GITHUB_USER} \
+                        -Dpassword=${GITHUB_TOKEN}
+                    """
                 }
             }
+        }
+    }
+
+    post {
+        success {
+            echo '✅ Build & Deployment successful.'
+        }
+        failure {
+            echo '❌ Build failed.'
         }
     }
 }
